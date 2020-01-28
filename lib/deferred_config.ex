@@ -174,7 +174,10 @@ defmodule DeferredConfig do
   end
   def get_system_tuple({:system, k, d}), do: System.get_env(k) || d
   def get_system_tuple({:system, k, d, {m, f}}) do
-    (val = System.get_env k) && apply(m, f, [val]) || d
+    case System.get_env(k) do
+      nil -> d
+      val -> apply(m, f, [val])
+    end
   end
   def get_system_tuple(t), do: throw "Could not fetch: #{inspect t}"
 
